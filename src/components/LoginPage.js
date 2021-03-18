@@ -22,21 +22,24 @@ const LoginPage = () => {
   return (
     <div className="Login">
       <Form onSubmit={authenticateUser}>
+        <div>
+          <h2>Log In</h2>
+        </div>
         <Form.Group size="lg" controlId="username">
-          <Form.Label>User Name</Form.Label>
           <Form.Control
             required
             autoFocus
             type="text"
+            placeholder="User Name"
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
           />
         </Form.Group>
         <Form.Group size="lg" controlId="password">
-          <Form.Label>Password</Form.Label>
           <Form.Control
             required
             type="password"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
