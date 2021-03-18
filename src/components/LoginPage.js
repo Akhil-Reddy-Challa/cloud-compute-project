@@ -1,17 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
 import "../styles/Login.css";
+import { useHistory } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const LoginPage = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const history = useHistory();
   function authenticateUser(event) {
     event.preventDefault();
     console.log("Authing");
     document.getElementById("loginBtn").textContent = "Logging In...";
     document.getElementById("loginBtn").disabled = true;
+    setTimeout(() => {
+      localStorage.setItem("user_auth_token", userName);
+      history.push("/home");
+    }, 1000);
   }
   return (
     <div className="Login">
@@ -45,9 +51,9 @@ const LoginPage = () => {
         </button>
         <div id="lineSeparator"></div>
         <p className="text-center">Not a member yet?</p>
-        <Button variant="success" block size="lg">
+        <Link to="/signup" className="btn btn-success btn-lg btn-block">
           Create New Account
-        </Button>
+        </Link>
       </Form>
     </div>
   );
