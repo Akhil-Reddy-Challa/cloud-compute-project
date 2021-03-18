@@ -1,15 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
-import { useHistory } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const SignUpPage = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const history = useHistory();
   function authenticateUser(event) {
     event.preventDefault();
   }
