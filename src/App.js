@@ -10,14 +10,12 @@ import HomePage from "./components/HomePage";
 import SignUpPage from "./components/SignUpPage";
 const App = () => {
   const checkForAuthToken = (Component) => {
-    //Authr'ing user
     const user_auth_token = localStorage.getItem("user_auth_token");
-    <Redirect to="/login" />;
-    // return user_auth_token ? (
-    //   <HomePage user_name={user_auth_token} />
-    // ) : (
-    //   <Redirect to="/login" />
-    // );
+    return user_auth_token ? (
+      <Component user_name={user_auth_token} />
+    ) : (
+      <Redirect to="/login" />
+    );
   };
   return (
     <Router>
@@ -28,7 +26,7 @@ const App = () => {
         <Route path="/signup">
           <SignUpPage />
         </Route>
-        <Route path="/home" render={checkForAuthToken(HomePage)}></Route>
+        <Route path="/home" render={() => checkForAuthToken(HomePage)}></Route>
         <Route exact path="/">
           <Redirect to="/home" />
         </Route>
