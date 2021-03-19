@@ -30,7 +30,7 @@ const Page1 = () => {
                 className="btn btn-link text-primary"
                 onClick={(e) => handleSearchBtnClick(e)}
               >
-                <i className="fa fa-search"></i>
+                <i className="fa fa-search" style={{ fontSize: "18px" }}></i>
               </button>
             </div>
           </div>
