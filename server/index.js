@@ -6,10 +6,10 @@ app.use(cors());
 app.use(express.json());
 
 const authenticateUserRouter = require("./routes/authenticateUser");
-// const newUserCreationRouter = require("./routes/newUserCreation");
+const createNewUserRouter = require("./routes/createNewUser");
 
 app.use("/authenticateUser", authenticateUserRouter);
-// app.use("/newuser", newUserCreationRouter);
+app.use("/newuser", createNewUserRouter);
 
 var server = app.listen(3000, () => {
   console.log("Server Listening on Port 3000");

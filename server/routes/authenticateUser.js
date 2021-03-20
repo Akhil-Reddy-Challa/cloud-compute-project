@@ -7,7 +7,6 @@ router.post("/", async (req, res) => {
   const user_creds = req.body;
   //Check for user_data in MongoDB
   const user_data = await checkInDBFor(user_creds.userName);
-  console.log(user_data);
   //Validate user object
   if (user_data) {
     res.send(user_data);
@@ -29,7 +28,7 @@ async function checkInDBFor(name) {
     const db = client.db(DB_Name);
     const collection = db.collection("UsersList");
     userObject = await collection.findOne({
-      user_name: name,
+      userName: name,
     });
   } catch (err) {
     console.log(err.stack);

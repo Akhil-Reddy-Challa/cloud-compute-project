@@ -1,18 +1,40 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
+import { useHistory } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+const { Backend_API } = require("../utils/Backend_API");
 
 const SignUpPage = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  function authenticateUser(event) {
+  const [firstName, setfirstName] = useState("");
+  const [lastName, setlastName] = useState("");
+  const history = useHistory();
+
+  const createUserAccount = async (event) => {
     event.preventDefault();
-  }
+    const responseFromServer = await fetch(Backend_API + "newuser/", {
+      headers: { "Content-Type": "application/json" },
+      method: "post",
+      body: JSON.stringify({ userName, password, email, firstName, lastName }),
+    });
+    let { status } = responseFromServer;
+    if (status === 200) {
+      const data = await responseFromServer.json(responseFromServer);
+      if (data.userExists) {
+        alert("User Name already in use");
+      } else {
+        history.push("/login");
+      }
+    } else {
+      alert("An Error Occured!");
+    }
+  };
   return (
     <div className="Login">
-      <Form onSubmit={authenticateUser}>
+      <Form onSubmit={createUserAccount}>
         <div>
           <h2>Sign Up</h2>
         </div>
@@ -39,10 +61,20 @@ const SignUpPage = () => {
         <Form.Group size="lg">
           <Form.Row>
             <Col>
-              <Form.Control required placeholder="First name" />
+              <Form.Control
+                required
+                value={firstName}
+                placeholder="First name"
+                onChange={(e) => setfirstName(e.target.value)}
+              />
             </Col>
             <Col>
-              <Form.Control required placeholder="Last name" />
+              <Form.Control
+                required
+                value={lastName}
+                placeholder="Last name"
+                onChange={(e) => setlastName(e.target.value)}
+              />
             </Col>
           </Form.Row>
         </Form.Group>

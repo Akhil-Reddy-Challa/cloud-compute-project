@@ -30,7 +30,7 @@ const LoginPage = () => {
       document.getElementById("loginBtn").disabled = false;
     }
     function validateUserCreds(userData) {
-      if (userData.user_password === password) {
+      if (userData.password === password) {
         localStorage.setItem("user_auth_token", userName);
         history.push("/home");
       } else {
