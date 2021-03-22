@@ -11,35 +11,33 @@ const {
 
 router.post("/", async (req, res) => {
   const { houseHoldNumber } = req.body;
-  console.log(houseHoldNumber);
 
-  if (houseHoldNumber) fetchRecordsOfHouseHold(houseHoldNumber);
-  else res.send({});
+  let result = await fetchRecordsOfHouseHold(houseHoldNumber);
+  return res.send(result);
 });
-function fetchRecordsOfHouseHold(houseHoldNumber) {
+async function fetchRecordsOfHouseHold(houseHoldNumber) {
   const mysql = require("mysql");
-  const connection = mysql.createConnection({
+  const pool = mysql.createPool({
+    connectionLimit: 10,
     host: host,
     port: port,
     user: user,
     password: password,
     database: database,
   });
-  let recordsOfHouseHold = "";
-  try {
-    connection.connect();
-    newQuery = query + `${houseHoldNumber} ORDER BY 1,2,3,4,5,6;`;
-    connection.query(newQuery, (err, rows) => {
-      if (err) throw err;
-      else if (rows.length > 0) {
-        console.log(rows, rows[0]);
-      }
+  newQuery = query + `${houseHoldNumber} ORDER BY 1,2,3,4,5,6;`;
+  executeQuery = () => {
+    return new Promise((resolve, reject) => {
+      pool.query(newQuery, (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+        return resolve(results);
+      });
     });
-  } catch (err) {
-    console.log(err.stack);
-  } finally {
-    connection.end();
-  }
+  };
+  let recordsOfHouseHold = await executeQuery();
+  return recordsOfHouseHold.length > 0 ? recordsOfHouseHold[0] : {};
 }
 
 module.exports = router;

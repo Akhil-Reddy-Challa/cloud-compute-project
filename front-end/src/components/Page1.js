@@ -5,7 +5,7 @@ const Page1 = () => {
   const fetchRecordsOfCustomer = async (event) => {
     event.preventDefault();
     let houseHoldNumber = document.getElementById("houseHoldNumber").value;
-    console.log("Request to Fetch records of " + houseHoldNumber);
+    if (!houseHoldNumber) return;
 
     const responseFromServer = await fetch(Backend_API + "fetchData/", {
       headers: { "Content-Type": "application/json" },
