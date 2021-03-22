@@ -45,7 +45,7 @@ const HomePage = (props) => {
 
         <Switch>
           <Route path="/home/page1">
-            <Page1 userName={props.user_name} />
+            <Page1 />
           </Route>
           <Route path="/home/page2">
             <Page2 />

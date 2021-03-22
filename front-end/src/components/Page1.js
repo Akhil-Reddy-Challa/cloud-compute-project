@@ -1,8 +1,6 @@
 import "../styles/Page1.css";
 
-const Page1 = (props) => {
-  console.log(props);
-
+const Page1 = () => {
   const handleSearchBtnClick = (event) => {
     event.preventDefault();
     let houseHoldNumber = document.getElementById("houseHoldNumber").value;
