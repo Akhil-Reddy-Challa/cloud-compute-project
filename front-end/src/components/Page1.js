@@ -1,10 +1,26 @@
 import "../styles/Page1.css";
+const { Backend_API } = require("../utils/Backend_API");
 
 const Page1 = () => {
-  const handleSearchBtnClick = (event) => {
+  const fetchRecordsOfCustomer = async (event) => {
     event.preventDefault();
     let houseHoldNumber = document.getElementById("houseHoldNumber").value;
-    console.log("Fetch records of" + houseHoldNumber);
+    console.log("Request to Fetch records of " + houseHoldNumber);
+
+    const responseFromServer = await fetch(Backend_API + "fetchData/", {
+      headers: { "Content-Type": "application/json" },
+      method: "post",
+      body: JSON.stringify({
+        houseHoldNumber,
+      }),
+    });
+    let { status } = responseFromServer;
+    if (status === 200) {
+      const data = await responseFromServer.json(responseFromServer);
+      console.log(data);
+    } else {
+      alert("An Error Occured!");
+    }
   };
   return (
     <div id="mainContainer">
@@ -28,7 +44,7 @@ const Page1 = () => {
                 id="button-addon1"
                 type="submit"
                 className="btn btn-link text-primary"
-                onClick={(e) => handleSearchBtnClick(e)}
+                onClick={(e) => fetchRecordsOfCustomer(e)}
               >
                 <i className="fa fa-search" style={{ fontSize: "18px" }}></i>
               </button>

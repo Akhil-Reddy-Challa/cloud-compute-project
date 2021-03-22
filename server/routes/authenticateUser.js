@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { MongoClient } = require("mongodb");
-const { MongoDB_URI } = require("../Database/config");
+const { MongoDB_URI } = require("../utils/mongoConfig");
 
 router.post("/", async (req, res) => {
   const user_creds = req.body;
