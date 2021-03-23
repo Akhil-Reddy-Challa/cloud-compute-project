@@ -22,37 +22,39 @@ const Page1 = () => {
     } else {
       alert("An Error Occured!");
     }
-    // let data = {
-    //   HSHD_NUM: "0011",
-    //   BASKET_NUM: "346420",
-    //   PURCHASE: "13-APR-19",
-    //   PRODUCT_NUM: "5290840",
-    //   DEPARTMENT: "FOOD",
-    // };
   };
   const writeDataToTable = (data) => {
-    //Create the table Header's
-    let tableHeader = document.getElementById("tableHeader");
-    let tableRow = document.createElement("tr");
-    for (let heading in data) {
-      let cell = document.createElement("th");
-      let textNode = document.createTextNode(heading);
-      cell.appendChild(textNode);
-      tableRow.appendChild(cell);
+    function createTableHeaders(packet) {
+      let tableHeader = document.getElementById("tableHeader");
+      let tableRow = document.createElement("tr");
+      for (let heading in packet) {
+        let cell = document.createElement("th");
+        let textNode = document.createTextNode(heading);
+        cell.appendChild(textNode);
+        tableRow.appendChild(cell);
+      }
+      tableHeader.appendChild(tableRow);
     }
-    tableHeader.appendChild(tableRow);
-
-    //Set the table rows
-    let tableBody = document.getElementById("tableBody");
-    tableRow = document.createElement("tr");
-    for (let heading in data) {
-      let cell = document.createElement("td");
-      let value = data[heading];
-      let textNode = document.createTextNode(value);
-      cell.appendChild(textNode);
-      tableBody.appendChild(cell);
+    function createTableRows(packet) {
+      let tableBody = document.getElementById("tableBody");
+      let tableRow = document.createElement("tr");
+      for (let heading in packet) {
+        let cell = document.createElement("td");
+        let value = packet[heading];
+        let textNode = document.createTextNode(value);
+        cell.appendChild(textNode);
+        tableBody.appendChild(cell);
+      }
+      tableBody.appendChild(tableRow);
     }
-    tableBody.appendChild(tableRow);
+    //If Customer has multiple transactions, we should create additional rows
+    if (data.length > 1) {
+      createTableHeaders(data[0]);
+    } else createTableHeaders(data);
+    for (let packet of data) {
+      console.log(packet);
+      createTableRows(packet);
+    }
   };
   return (
     <div>

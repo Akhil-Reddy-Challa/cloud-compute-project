@@ -37,7 +37,8 @@ async function fetchRecordsOfHouseHold(houseHoldNumber) {
     });
   };
   let recordsOfHouseHold = await executeQuery();
-  return recordsOfHouseHold.length > 0 ? recordsOfHouseHold[0] : {};
+
+  return recordsOfHouseHold.length > 0 ? recordsOfHouseHold : {};
 }
 
 module.exports = router;
