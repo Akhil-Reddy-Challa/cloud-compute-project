@@ -25,10 +25,9 @@ async function fetchRecordsOfHouseHold(houseHoldNumber) {
     password: password,
     database: database,
   });
-  newQuery = query + `${houseHoldNumber} ORDER BY 1,2,3,4,5,6;`;
   executeQuery = () => {
     return new Promise((resolve, reject) => {
-      pool.query(newQuery, (error, results) => {
+      pool.query(query, [houseHoldNumber], (error, results) => {
         if (error) {
           return reject(error);
         }
