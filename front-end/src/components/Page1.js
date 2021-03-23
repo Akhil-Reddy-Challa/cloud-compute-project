@@ -17,7 +17,6 @@ const Page1 = () => {
     let { status } = responseFromServer;
     if (status === 200) {
       const data = await responseFromServer.json(responseFromServer);
-      console.log(data);
       writeDataToTable(data);
     } else {
       alert("An Error Occured!");
@@ -47,12 +46,18 @@ const Page1 = () => {
       }
       tableBody.appendChild(tableRow);
     }
+    function cleanPreviousHouseHoldRecords() {
+      let tableHead = document.getElementById("tableHeader");
+      let tableBody = document.getElementById("tableBody");
+      tableHead.querySelectorAll("*").forEach((n) => n.remove());
+      tableBody.querySelectorAll("*").forEach((n) => n.remove());
+    }
+    cleanPreviousHouseHoldRecords();
     //If Customer has multiple transactions, we should create additional rows
     if (data.length > 1) {
       createTableHeaders(data[0]);
     } else createTableHeaders(data);
     for (let packet of data) {
-      console.log(packet);
       createTableRows(packet);
     }
   };
