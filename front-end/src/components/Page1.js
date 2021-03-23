@@ -5,7 +5,10 @@ const Page1 = () => {
   const fetchRecordsOfCustomer = async (event) => {
     event.preventDefault();
     let houseHoldNumber = document.getElementById("houseHoldNumber").value;
-    if (!houseHoldNumber) return;
+    if (!houseHoldNumber) {
+      alert("Enter an household number");
+      return;
+    }
 
     const responseFromServer = await fetch(Backend_API + "fetchData/", {
       headers: { "Content-Type": "application/json" },
@@ -52,19 +55,33 @@ const Page1 = () => {
       tableHead.querySelectorAll("*").forEach((n) => n.remove());
       tableBody.querySelectorAll("*").forEach((n) => n.remove());
     }
-    cleanPreviousHouseHoldRecords();
-    //If Customer has multiple transactions, we should create additional rows
-    if (data.length > 1) {
-      createTableHeaders(data[0]);
-    } else createTableHeaders(data);
-    for (let packet of data) {
-      createTableRows(packet);
+    function validateDataPacket() {
+      const messageBanner = document.getElementById("messageDisplayArea");
+      if (data.length === 0) {
+        messageBanner.style.display = "block";
+        messageBanner.innerHTML = "HouseHold Number does not exist!";
+      } else {
+        messageBanner.style.display = "none";
+      }
     }
+    function handleDataInsertion() {
+      //Check if there are multiple transactions
+      if (data.length > 1) {
+        createTableHeaders(data[0]);
+      } else createTableHeaders(data);
+      //Now insert the table rows
+      for (let packet of data) {
+        createTableRows(packet);
+      }
+    }
+    validateDataPacket();
+    cleanPreviousHouseHoldRecords();
+    handleDataInsertion();
   };
   return (
     <div>
       <div id="mainContainer">
-        <h3>Data-Set "8451_The_Complete_Journey_2_Sample"</h3>
+        <h4>Data-Set "8451_The_Complete_Journey_2_Sample"</h4>
         <p>
           Enter the HSHD_NUM below to fetch all the data linked to the number
           from tables(household, transaction, and products)
@@ -92,6 +109,9 @@ const Page1 = () => {
             </div>
           </div>
         </form>
+        <div id="messageDisplayArea">
+          Transactions List of the House-Hold would be displayed here.
+        </div>
       </div>
       <table
         id="houseHoldDetails"

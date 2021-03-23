@@ -20,3 +20,10 @@
 #houseHoldDetails {
   font-size: 11px;
 }
+#messageDisplayArea {
+  font-style: italic;
+  font-weight: lighter;
+  padding: 70px 0;
+  text-align: center;
+  background-color: #eef2f3;
+}
