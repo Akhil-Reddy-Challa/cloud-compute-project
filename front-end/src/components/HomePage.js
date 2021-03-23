@@ -28,32 +28,28 @@ const HomePage = (props) => {
           </button>
         </Navbar>
         <div id="pagesContainer" className="d-flex justify-content-center">
-          <ul style={{}}>
+          <ul>
             <Link to="/home/page1">Search on Data Pulls</Link>
-            <br></br>
             <Link to="/home/page2">
               Find how does customer engagement change over time.
             </Link>
-            <br></br>
             <Link to="/home/page3">
               Find which demographic factors affect customer engagement.
             </Link>
-            <br></br>
             <Link to="/home/page4">Upload DataSet</Link>
           </ul>
         </div>
-
         <Switch>
-          <Route path="/home/page1">
+          <Route exact path="/home/page1">
             <Page1 />
           </Route>
-          <Route path="/home/page2">
+          <Route exact path="/home/page2">
             <Page2 />
           </Route>
-          <Route path="/home/page3">
+          <Route exact path="/home/page3">
             <Page3 />
           </Route>
-          <Route path="/home/page4" userName={props.user_name}>
+          <Route exact path="/home/page4" userName={props.user_name}>
             <Page4 />
           </Route>
         </Switch>
