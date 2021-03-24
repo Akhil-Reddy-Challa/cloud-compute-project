@@ -4,10 +4,10 @@ const { Backend_API } = require("../utils/Backend_API");
 
 const Page1 = () => {
   const [totalTransaction, setTotalTransaction] = useState("");
-  //Fix bug in Page reload, change login to home
+  const [houseHoldNumber, setHouseHoldNumber] = useState("");
+
   const fetchRecordsOfCustomer = async (event) => {
     event.preventDefault();
-    let houseHoldNumber = document.getElementById("houseHoldNumber").value;
     if (!houseHoldNumber) {
       alert("Enter an household number");
       return;
@@ -91,22 +91,21 @@ const Page1 = () => {
           Enter the HSHD_NUM below to fetch all the data linked to the number
           from tables(household, transaction, and products)
         </p>
-        <form>
+        <form onSubmit={fetchRecordsOfCustomer}>
           <div className="p-1 bg-light rounded rounded-pill shadow-sm mb-4">
             <div className="input-group">
               <input
-                id="houseHoldNumber"
                 type="search"
                 placeholder="HSHD_NUM"
+                value={houseHoldNumber}
+                onChange={(e) => setHouseHoldNumber(e.target.value)}
                 aria-describedby="button-addon1"
                 className="form-control border-0 bg-light"
               />
               <div className="input-group-append">
                 <button
                   id="button-addon1"
-                  type="submit"
                   className="btn btn-link text-primary"
-                  onClick={(e) => fetchRecordsOfCustomer(e)}
                 >
                   <i className="fa fa-search" style={{ fontSize: "18px" }}></i>
                 </button>
