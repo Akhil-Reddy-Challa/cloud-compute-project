@@ -123,7 +123,7 @@ const Page1 = () => {
       >
         <caption
           id="tableCaption"
-          style={{ "caption-side": "top", "text-align": "center" }}
+          style={{ captionSide: "top", textAlign: "center" }}
         >
           {totalTransaction}
         </caption>
