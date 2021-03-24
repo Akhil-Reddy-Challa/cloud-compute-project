@@ -7,5 +7,5 @@ module.exports = {
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE_NAME,
-  query: process.env.MYSQL_QUERY,
+  query: process.env.MYSQL_UPDATED_QUERY,
 };
