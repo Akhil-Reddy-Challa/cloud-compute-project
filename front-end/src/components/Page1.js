@@ -1,7 +1,10 @@
 import "../styles/Page1.css";
+import { useState } from "react";
 const { Backend_API } = require("../utils/Backend_API");
 
 const Page1 = () => {
+  const [totalTransaction, setTotalTransaction] = useState("");
+  //Fix bug in Page reload, change login to home
   const fetchRecordsOfCustomer = async (event) => {
     event.preventDefault();
     let houseHoldNumber = document.getElementById("houseHoldNumber").value;
@@ -73,6 +76,8 @@ const Page1 = () => {
       for (let packet of data) {
         createTableRows(packet);
       }
+      //Display Total transactions count
+      setTotalTransaction("Total Transactions: " + data.length);
     }
     validateDataPacket();
     cleanPreviousHouseHoldRecords();
@@ -117,6 +122,12 @@ const Page1 = () => {
         id="houseHoldDetails"
         className="table table-striped table-bordered table-sm"
       >
+        <caption
+          id="tableCaption"
+          style={{ "caption-side": "top", "text-align": "center" }}
+        >
+          {totalTransaction}
+        </caption>
         <thead id="tableHeader" className="table-dark"></thead>
         <tbody id="tableBody"></tbody>
       </table>
