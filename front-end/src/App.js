@@ -37,7 +37,7 @@ const App = () => {
           render={() => checkForAuthToken(HomePage)}
         ></Route>
         <Route path="/home/*">
-          <LoginPage />
+          <HomePage />
         </Route>
       </Switch>
     </Router>
