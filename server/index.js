@@ -8,10 +8,12 @@ app.use(express.json());
 const authenticateUserRouter = require("./routes/authenticateUser");
 const createNewUserRouter = require("./routes/createNewUser");
 const sampleDataSetRouter = require("./routes/sampleDataSetRouter");
+const csvFilesUploadRouter = require("./routes/csvFileUploader");
 
 app.use("/authenticateUser", authenticateUserRouter);
 app.use("/newuser", createNewUserRouter);
 app.use("/fetchData", sampleDataSetRouter);
+app.use("/csvupload", csvFilesUploadRouter);
 
 var server = app.listen(3000, () => {
   console.log("Server Listening on Port 3000");
