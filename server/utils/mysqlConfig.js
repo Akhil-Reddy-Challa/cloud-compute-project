@@ -8,4 +8,7 @@ module.exports = {
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE_NAME,
   query: process.env.MYSQL_QUERY,
+  query2: process.env.MYSQL_PRODUCTS_TABLE_CREATION,
+  query3: process.env.MYSQL_TRANSACTIONS_TABLE_CREATION,
+  query4: process.env.MYSQL_HOUSEHOLDS_TABLE_CREATION,
 };

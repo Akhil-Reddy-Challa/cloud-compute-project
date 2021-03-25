@@ -1,7 +1,7 @@
 const { Backend_API } = require("../utils/Backend_API");
 
 const Page4 = () => {
-  const handleFilesUpload = (e) => {
+  const handleFilesUpload = async (e) => {
     e.preventDefault(); //Prevents page reload
 
     let uploadedFiles = document.getElementById("csvFiles");
@@ -13,10 +13,11 @@ const Page4 = () => {
     file_data.append("csvFiles", uploadedFiles[1]);
     file_data.append("csvFiles", uploadedFiles[2]);
 
-    const response = fetch(Backend_API + "csvupload", {
+    const { status } = await fetch(Backend_API + "csvupload", {
       method: "POST",
       body: file_data,
     });
+    console.log(status);
   };
   return (
     <div id="mainContainer">
