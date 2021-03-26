@@ -86,10 +86,16 @@ const Page1 = () => {
   return (
     <div>
       <div id="mainContainer">
-        <h4>Data-Set "8451_The_Complete_Journey_2_Sample"</h4>
-        <p>
-          Enter the HSHD_NUM below to fetch all the data linked to the number
-          from tables(household, transaction, and products)
+        <div>
+          <label for="sel1">Select a DataSet from below:</label>
+          <select class="form-control">
+            <option value="one">8451_The_Complete_Journey_2_Sample</option>
+            <option value="two">DataSet-2</option>
+          </select>
+        </div>
+        <p style={{ fontStyle: "italic", fontWeight: "lighter" }}>
+          Enter the <b>HSHD_NUM</b> below to fetch all the data linked to the
+          number from tables(household, transaction, and products)
         </p>
         <form onSubmit={fetchRecordsOfCustomer}>
           <div className="p-1 bg-light rounded rounded-pill shadow-sm mb-4">
