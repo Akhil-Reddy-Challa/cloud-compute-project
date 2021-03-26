@@ -17,49 +17,60 @@ var storage = multer.diskStorage({
     );
   },
 });
+
 var upload = multer({ storage: storage }).array("csvFiles", 3);
-router.post("/", (req, res) => {
-  upload(req, res, function (err) {
+let status = null;
+
+router.post("/", async (req, res) => {
+  upload(req, res, async function (err) {
     if (err) {
       res.sendStatus(400);
     }
-    let status = processFiles(req.files);
+    await processFiles(req.files);
     return status ? res.sendStatus(200) : res.sendStatus(500);
   });
 });
-function processFiles(filesObj) {
-  function parseCSVFiles(files) {
+
+async function processFiles(filesObj) {
+  parseCSVFiles = async (files) => {
     const csv = require("csv-parser");
     const fs = require("fs");
 
     let fileNameFinder = 0;
     //If fNF === 0 : file = Transactions.csv
     //elif fNF === 1: file = Products.csv
-    //el file = HouseHolds.csv
+    //else file = HouseHolds.csv
     for (let file of files) {
-      const csvRows = [];
-      fs.createReadStream(file)
-        .pipe(
+      const processFile = async () => {
+        let csvRows = [];
+        const parser = fs.createReadStream(file).pipe(
           csv({
             mapHeaders: ({ header }) => header.trim(),
             mapValues: ({ value }) => value.trim(),
           })
-        )
-        .on("data", (data) => csvRows.push(data))
-        .on("end", () => {
-          insertIntoDB(csvRows, fileNameFinder);
-          fileNameFinder++;
-          //Delete The File
-          fs.unlinkSync(file);
-        });
+        );
+        for await (const record of parser) {
+          csvRows.push(record);
+        }
+        return csvRows;
+      };
+      const records = await processFile();
+      await insertIntoDB(records, fileNameFinder);
+      fileNameFinder++;
+      fs.unlinkSync(file);
     }
-  }
+  };
   let files = [];
   for (let file of filesObj) files.push(file.path);
-  parseCSVFiles(files);
-  return true;
+  await parseCSVFiles(files);
 }
-function insertIntoDB(csvRows, fileNameFinder) {
+
+async function insertIntoDB(csvRows, fileNameFinder) {
+  let headersOfCSV = extractHeaders();
+  let dataOfCSV = extractValues();
+  let tableName = findTableName();
+
+  await transmitRecords(headersOfCSV, dataOfCSV, tableName);
   function extractHeaders() {
     return Object.keys(csvRows[0]);
   }
@@ -77,22 +88,12 @@ function insertIntoDB(csvRows, fileNameFinder) {
     return allTheData;
   }
   function findTableName() {
-    let tableName = "HOUSEHOLDS";
-    if (fileNameFinder === 0) tableName = "TRANSACTIONS";
-    else if (fileNameFinder === 1) tableName = "PRODUCTS";
-    return tableName;
+    const tableNames = ["TRANSACTIONS", "PRODUCTS", "HOUSEHOLDS"];
+    return tableNames[fileNameFinder];
   }
-
-  let headersOfCSV = extractHeaders();
-  let dataOfCSV = extractValues();
-  // //Find table name using the uploaded file_name
-  let tableName = findTableName();
-
-  //console.log("request to Push data to table", tableName);
-  pushToDB(headersOfCSV, dataOfCSV, tableName);
 }
 
-async function pushToDB(csvHeaders, csvValues, tableName) {
+async function transmitRecords(csvHeaders, csvValues, tableName) {
   const mysql = require("mysql");
   const pool = mysql.createPool({
     connectionLimit: 10,
@@ -112,7 +113,7 @@ async function pushToDB(csvHeaders, csvValues, tableName) {
       });
     });
   };
-  deleteTables = (query) => {
+  deleteTable = (query) => {
     return new Promise((resolve, reject) => {
       pool.query(query, (error, results) => {
         if (error) {
@@ -122,9 +123,9 @@ async function pushToDB(csvHeaders, csvValues, tableName) {
       });
     });
   };
-  insertDataintoTable = (query, nameOfCSVRows) => {
+  insertData = (query, values) => {
     return new Promise((resolve, reject) => {
-      pool.query(query, nameOfCSVRows, (error, results) => {
+      pool.query(query, [values], (error, results) => {
         if (error) {
           return reject(error);
         }
@@ -132,28 +133,27 @@ async function pushToDB(csvHeaders, csvValues, tableName) {
       });
     });
   };
-  //Create Table creation query
-  let tableCreateStatement = `CREATE TABLE ${tableName}(`;
-  for (let i = 0; i < csvHeaders.length; i++) {
-    if (i === csvHeaders.length - 1)
-      tableCreateStatement += `${csvHeaders[i]} varchar(200));`;
-    else tableCreateStatement += `${csvHeaders[i]} varchar(200),`;
+
+  try {
+    //Create-Table query
+    let tableCreateStatement = `CREATE TABLE ${tableName}(`;
+    for (let i = 0; i < csvHeaders.length; i++) {
+      if (i === csvHeaders.length - 1)
+        tableCreateStatement += `${csvHeaders[i]} varchar(200));`;
+      else tableCreateStatement += `${csvHeaders[i]} varchar(200),`;
+    }
+    // console.log("Table creation Statement: \n" + tableCreateStatement + "\n");
+    await createTable(tableCreateStatement);
+
+    let insertStatement = `INSERT INTO ${tableName} VALUES ?`;
+    //console.log(insertStatement);
+    await insertData(insertStatement, csvValues);
+    status = "Success";
+  } catch (err) {
+    console.error(err);
+  } finally {
+    return status;
   }
-  console.log("Table creation Statement: \n" + tableCreateStatement + "\n");
-  await createTable(tableCreateStatement);
-  //await deleteTables(`DROP TABLE ${tableName}`);
-  //console.log("Data to be inserted", csvValues);
-  // for (let value of csvValues) {
-  //   await insertDataintoTable();
-  // }
-  // let query = "";
-  // if ((tableName = "PRODUCTS")) query = query2;
-  // else if ((tableName = "TRANSACTIONS")) query = query3;
-  // else query = query4;
-  // console.log(nameOfCSVRows);
-  // return;
-  // let op = await executeQuery(query, nameOfCSVRows);
-  // console.log(op);
 }
 
 module.exports = router;
