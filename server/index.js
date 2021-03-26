@@ -22,7 +22,7 @@ var server = app.listen(3000, () => {
 //Error Handling statements
 function handleTermination(signal) {
   // If a termination signal is received.
-  console.info(signal + "*******  received. *******");
+  console.info("\n" + signal);
   console.log("Closing http server.");
   server.close(() => {
     console.log("Http server closed.");

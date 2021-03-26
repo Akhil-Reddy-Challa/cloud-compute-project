@@ -4,14 +4,15 @@ const Page4 = () => {
   const handleFilesUpload = async (e) => {
     e.preventDefault(); //Prevents page reload
 
-    let uploadedFiles = document.getElementById("csvFiles");
-    uploadedFiles = uploadedFiles.files;
+    let transactionsFile = document.getElementById("transactionsFile").files;
+    let productsFile = document.getElementById("productsFile").files;
+    let householdsFile = document.getElementById("householdsFile").files;
 
     //Now prepare the file for transfer
     const file_data = new FormData();
-    file_data.append("csvFiles", uploadedFiles[0]);
-    file_data.append("csvFiles", uploadedFiles[1]);
-    file_data.append("csvFiles", uploadedFiles[2]);
+    file_data.append("csvFiles", transactionsFile[0]);
+    file_data.append("csvFiles", productsFile[0]);
+    file_data.append("csvFiles", householdsFile[0]);
 
     const { status } = await fetch(Backend_API + "csvupload", {
       method: "POST",
@@ -27,20 +28,41 @@ const Page4 = () => {
       >
         <div className="mb-3">
           <label htmlFor="csvFile" className="form-label">
-            Upload Three CSV Files using below link
+            Upload <b>"Transactions CSV"</b> file below
           </label>
           <input
             type="file"
-            id="csvFiles"
+            id="transactionsFile"
             className="form-control"
             name="csvFiles"
             accept=".csv"
-            multiple
+            required
+          />
+          <label htmlFor="csvFile" className="form-label">
+            Upload <b>"Products CSV"</b> file below
+          </label>
+          <input
+            type="file"
+            id="productsFile"
+            className="form-control"
+            name="csvFiles"
+            accept=".csv"
+            required
+          />
+          <label htmlFor="csvFile" className="form-label">
+            Upload <b>"HouseHolds CSV"</b> file below
+          </label>
+          <input
+            type="file"
+            id="householdsFile"
+            className="form-control"
+            name="csvFiles"
+            accept=".csv"
             required
           />
         </div>
         <button type="submit" className="btn btn-primary">
-          Upload
+          Submit
         </button>
       </form>
     </div>
