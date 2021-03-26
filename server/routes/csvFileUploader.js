@@ -47,7 +47,7 @@ function processFiles(filesObj) {
         )
         .on("data", (data) => csvRows.push(data))
         .on("end", () => {
-          insertIntoDB(file, csvRows, fileNameFinder);
+          insertIntoDB(csvRows, fileNameFinder);
           fileNameFinder++;
           //Delete The File
           fs.unlinkSync(file);
@@ -59,7 +59,7 @@ function processFiles(filesObj) {
   parseCSVFiles(files);
   return true;
 }
-function insertIntoDB(file, csvRows, fileNameFinder) {
+function insertIntoDB(csvRows, fileNameFinder) {
   function extractHeaders() {
     return Object.keys(csvRows[0]);
   }
@@ -88,8 +88,8 @@ function insertIntoDB(file, csvRows, fileNameFinder) {
   // //Find table name using the uploaded file_name
   let tableName = findTableName();
 
-  console.log("request to Push data to table", tableName);
-  //pushToDB(headersOfCSV, dataOfCSV, tableName);
+  //console.log("request to Push data to table", tableName);
+  pushToDB(headersOfCSV, dataOfCSV, tableName);
 }
 
 async function pushToDB(csvHeaders, csvValues, tableName) {
@@ -104,7 +104,7 @@ async function pushToDB(csvHeaders, csvValues, tableName) {
   });
   createTable = (query) => {
     return new Promise((resolve, reject) => {
-      pool.query(query, [csvHeaders], (error, results) => {
+      pool.query(query, (error, results) => {
         if (error) {
           return reject(error);
         }
@@ -112,24 +112,40 @@ async function pushToDB(csvHeaders, csvValues, tableName) {
       });
     });
   };
-  // executeQuery = (query, nameOfCSVRows) => {
-  //   return new Promise((resolve, reject) => {
-  //     pool.query(query, nameOfCSVRows, (error, results) => {
-  //       if (error) {
-  //         return reject(error);
-  //       }
-  //       return resolve(results);
-  //     });
-  //   });
-  // };
-  //Create Table
-  let query = `CREATE TABLE ${tableName}(`;
+  deleteTables = (query) => {
+    return new Promise((resolve, reject) => {
+      pool.query(query, (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+        return resolve(results);
+      });
+    });
+  };
+  insertDataintoTable = (query, nameOfCSVRows) => {
+    return new Promise((resolve, reject) => {
+      pool.query(query, nameOfCSVRows, (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+        return resolve(results);
+      });
+    });
+  };
+  //Create Table creation query
+  let tableCreateStatement = `CREATE TABLE ${tableName}(`;
   for (let i = 0; i < csvHeaders.length; i++) {
-    if (i === csvHeaders.length - 1) query += `${csvHeaders[i]} varchar(200));`;
-    else query += `${csvHeaders[i]} varchar(200),`;
+    if (i === csvHeaders.length - 1)
+      tableCreateStatement += `${csvHeaders[i]} varchar(200));`;
+    else tableCreateStatement += `${csvHeaders[i]} varchar(200),`;
   }
-  console.log(query + "\n");
-  //await createTable(query);
+  console.log("Table creation Statement: \n" + tableCreateStatement + "\n");
+  await createTable(tableCreateStatement);
+  //await deleteTables(`DROP TABLE ${tableName}`);
+  //console.log("Data to be inserted", csvValues);
+  // for (let value of csvValues) {
+  //   await insertDataintoTable();
+  // }
   // let query = "";
   // if ((tableName = "PRODUCTS")) query = query2;
   // else if ((tableName = "TRANSACTIONS")) query = query3;
