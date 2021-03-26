@@ -1,6 +1,10 @@
+import { useState } from "react";
+
 const { Backend_API } = require("../utils/Backend_API");
 
 const Page4 = () => {
+  const [dataSetName, setDataSetName] = useState("");
+
   const handleFilesUpload = async (e) => {
     e.preventDefault(); //Prevents page reload
 
@@ -18,7 +22,9 @@ const Page4 = () => {
       method: "POST",
       body: file_data,
     });
-    console.log(status);
+    if (status === 200) {
+      console.log("Files inserted succesfully");
+    }
   };
   return (
     <div id="mainContainer">
@@ -27,6 +33,18 @@ const Page4 = () => {
         encType="multipart/form-data"
       >
         <div className="mb-3">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Give a Name to the dataset</label>
+            <input
+              type="text"
+              value={dataSetName}
+              onChange={(e) => setDataSetName(e.target.value)}
+              className="form-control"
+              aria-describedby="emailHelp"
+              placeholder="Name"
+              required
+            />
+          </div>
           <label htmlFor="csvFile" className="form-label">
             Upload <b>"Transactions CSV"</b> file below
           </label>
