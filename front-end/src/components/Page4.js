@@ -1,13 +1,23 @@
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 const { Backend_API } = require("../utils/Backend_API");
 
 const Page4 = (props) => {
   const [dataSetName, setDataSetName] = useState("");
   const { userName } = props;
+  const [userDatasetList, setUserDatasetList] = useState([]);
+  const history = useHistory();
 
   const handleFilesUpload = async (e) => {
     e.preventDefault(); //Prevents page reload
+
+    // console.log(userDatasetList);
+    history.push("/home/page1");
+
+    if (userDatasetList.includes(dataSetName)) {
+      alert("A DataSet with that name exists!");
+      return;
+    }
 
     let transactionsFile = document.getElementById("transactionsFile").files;
     let productsFile = document.getElementById("productsFile").files;
@@ -28,8 +38,25 @@ const Page4 = (props) => {
     );
     if (status === 200) {
       console.log("Files inserted succesfully");
+      history.push("/home");
     }
   };
+  useEffect(() => {
+    async function getUserDataSetNames() {
+      console.log("Fetching records of", userName);
+      const response = await fetch(Backend_API + "fetchDataSetNames", {
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        body: JSON.stringify({ userName }),
+      });
+      let { status } = response;
+      if (status === 200) {
+        const { dataSetNames } = await response.json(response);
+        setUserDatasetList(dataSetNames);
+      }
+    }
+    getUserDataSetNames();
+  }, []);
   return (
     <div id="mainContainer">
       <form
