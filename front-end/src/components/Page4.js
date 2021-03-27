@@ -2,8 +2,9 @@ import { useState } from "react";
 
 const { Backend_API } = require("../utils/Backend_API");
 
-const Page4 = () => {
+const Page4 = (props) => {
   const [dataSetName, setDataSetName] = useState("");
+  const { userName } = props;
 
   const handleFilesUpload = async (e) => {
     e.preventDefault(); //Prevents page reload
@@ -18,10 +19,13 @@ const Page4 = () => {
     file_data.append("csvFiles", productsFile[0]);
     file_data.append("csvFiles", householdsFile[0]);
 
-    const { status } = await fetch(Backend_API + "csvupload", {
-      method: "POST",
-      body: file_data,
-    });
+    const { status } = await fetch(
+      Backend_API + `csvupload/${userName}/${dataSetName}`,
+      {
+        method: "POST",
+        body: file_data,
+      }
+    );
     if (status === 200) {
       console.log("Files inserted succesfully");
     }
@@ -33,8 +37,10 @@ const Page4 = () => {
         encType="multipart/form-data"
       >
         <div className="mb-3">
-          <div class="form-group">
-            <label for="exampleInputEmail1">Give a Name to the dataset</label>
+          <div className="form-group">
+            <label htmlFor="exampleInputEmail1">
+              Give a Name to the dataset
+            </label>
             <input
               type="text"
               value={dataSetName}

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { host, port, user, password } = require("../utils/mysqlConfig");
+const { host, port, user, password, query } = require("../utils/mysqlConfig");
 
 const multer = require("multer");
 var storage = multer.diskStorage({
@@ -17,16 +17,22 @@ var storage = multer.diskStorage({
     );
   },
 });
-
 var upload = multer({ storage: storage }).array("csvFiles", 3);
-let status = null;
 
-router.post("/", async (req, res) => {
+let status;
+let dataSetName;
+let userName;
+
+router.post("/:userName/:dataSetName", async (req, res) => {
   upload(req, res, async function (err) {
     if (err) {
       res.sendStatus(400);
     }
+    dataSetName = req.params.dataSetName;
+    userName = req.params.userName;
+    status = null;
     await processFiles(req.files);
+    await storeDatasetName();
     return status ? res.sendStatus(200) : res.sendStatus(500);
   });
 });
@@ -71,6 +77,7 @@ async function insertIntoDB(csvRows, fileNameFinder) {
   let tableName = findTableName();
 
   await transmitRecords(headersOfCSV, dataOfCSV, tableName);
+
   function extractHeaders() {
     return Object.keys(csvRows[0]);
   }
@@ -101,9 +108,8 @@ async function transmitRecords(csvHeaders, csvValues, tableName) {
     port: port,
     user: user,
     password: password,
-    database: "UserFiles",
   });
-  createTable = (query) => {
+  createDB = (query) => {
     return new Promise((resolve, reject) => {
       pool.query(query, (error, results) => {
         if (error) {
@@ -113,7 +119,7 @@ async function transmitRecords(csvHeaders, csvValues, tableName) {
       });
     });
   };
-  deleteTable = (query) => {
+  createTable = (query) => {
     return new Promise((resolve, reject) => {
       pool.query(query, (error, results) => {
         if (error) {
@@ -135,24 +141,54 @@ async function transmitRecords(csvHeaders, csvValues, tableName) {
   };
 
   try {
+    //Create DB If Not Exists
+    const DB_NAME = "USER_" + userName + "_DATASET_" + dataSetName;
+    let statement = `CREATE DATABASE IF NOT EXISTS ${DB_NAME};`;
+    createDB(statement);
+
     //Create-Table query
-    let tableCreateStatement = `CREATE TABLE ${tableName}(`;
+    let tableCreateStatement = `CREATE TABLE ${DB_NAME}.${tableName}(`;
     for (let i = 0; i < csvHeaders.length; i++) {
       if (i === csvHeaders.length - 1)
         tableCreateStatement += `${csvHeaders[i]} varchar(200));`;
       else tableCreateStatement += `${csvHeaders[i]} varchar(200),`;
     }
-    // console.log("Table creation Statement: \n" + tableCreateStatement + "\n");
     await createTable(tableCreateStatement);
-
-    let insertStatement = `INSERT INTO ${tableName} VALUES ?`;
-    //console.log(insertStatement);
+    let insertStatement = `INSERT INTO ${DB_NAME}.${tableName} VALUES ?`;
     await insertData(insertStatement, csvValues);
-    status = "Success";
+    status = "SUCCESS";
   } catch (err) {
+    status = null;
     console.error(err);
   } finally {
     return status;
+  }
+}
+
+async function storeDatasetName() {
+  const { MongoClient } = require("mongodb");
+  const { MongoDB_URI } = require("../utils/mongoConfig");
+  const client = new MongoClient(MongoDB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  //Check the global status, if true then insert the name
+  if (status) {
+    const dbName = "Users_Database";
+    try {
+      await client.connect();
+      const db = client.db(dbName);
+      const collection = db.collection("Users_Datasets");
+      await collection.insertOne({
+        userName,
+        dataSetName,
+        uploadDate: new Date(),
+      });
+    } catch (err) {
+      console.log(err.stack);
+    } finally {
+      await client.close();
+    }
   }
 }
 
