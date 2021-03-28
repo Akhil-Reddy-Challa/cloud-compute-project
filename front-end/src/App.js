@@ -12,7 +12,7 @@ import "font-awesome/css/font-awesome.css";
 
 const App = () => {
   const checkForAuthToken = (Component) => {
-    const user_auth_token = localStorage.getItem("user_auth_token");
+    const user_auth_token = sessionStorage.getItem("user_auth_token");
     return user_auth_token ? (
       <Component user_name={user_auth_token} />
     ) : (

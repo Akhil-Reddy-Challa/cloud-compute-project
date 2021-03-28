@@ -31,7 +31,7 @@ const LoginPage = () => {
     }
     function validateUserCreds(userData) {
       if (userData.password === password) {
-        localStorage.setItem("user_auth_token", userName);
+        sessionStorage.setItem("user_auth_token", userName);
         history.push("/home");
       } else {
         alert("UserName does not exist or Password is incorrect");

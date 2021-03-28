@@ -10,7 +10,7 @@ import Page4 from "../components/Page4";
 const HomePage = (props) => {
   const history = useHistory();
   const logOutUser = () => {
-    localStorage.removeItem("user_auth_token");
+    sessionStorage.removeItem("user_auth_token");
     history.push("/login");
   };
   return (
