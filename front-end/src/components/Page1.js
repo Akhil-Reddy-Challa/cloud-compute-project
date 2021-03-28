@@ -32,7 +32,7 @@ const Page1 = (props) => {
     let { status } = response;
     if (status === 200) {
       const data = await response.json(response);
-      writeDataToTable(data);
+      if (data) writeDataToTable(data);
     } else {
       alert("An Error Occured!");
     }

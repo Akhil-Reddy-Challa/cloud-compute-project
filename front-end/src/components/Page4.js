@@ -4,7 +4,7 @@ const { Backend_API } = require("../utils/Backend_API");
 
 const Page4 = (props) => {
   const [dataSetName, setDataSetName] = useState("");
-  const { userName } = props;
+  let { userName } = props;
   const [userDatasetList, setUserDatasetList] = useState([]);
   const history = useHistory();
 
@@ -35,10 +35,13 @@ const Page4 = (props) => {
         }
       );
       if (status === 200) {
-        console.log("Files inserted succesfully");
+        //console.log("Files inserted succesfully");
         history.push("/home/page1");
       }
-    } else console.log("user Name invalid");
+    } else {
+      console.log("user Name invalid");
+      alert("An error occured");
+    }
   };
   useEffect(() => {
     async function getUserDataSetNames() {
