@@ -11,11 +11,8 @@ const Page4 = (props) => {
   const handleFilesUpload = async (e) => {
     e.preventDefault(); //Prevents page reload
 
-    // console.log(userDatasetList);
-    history.push("/home/page1");
-
     if (userDatasetList.includes(dataSetName)) {
-      alert("A DataSet with that name exists!");
+      alert("A data-set with that name exists!");
       return;
     }
 
@@ -29,17 +26,19 @@ const Page4 = (props) => {
     file_data.append("csvFiles", productsFile[0]);
     file_data.append("csvFiles", householdsFile[0]);
 
-    const { status } = await fetch(
-      Backend_API + `csvupload/${userName}/${dataSetName}`,
-      {
-        method: "POST",
-        body: file_data,
+    if (userName && dataSetName) {
+      const { status } = await fetch(
+        Backend_API + `csvupload/${userName}/${dataSetName}`,
+        {
+          method: "POST",
+          body: file_data,
+        }
+      );
+      if (status === 200) {
+        console.log("Files inserted succesfully");
+        history.push("/home/page1");
       }
-    );
-    if (status === 200) {
-      console.log("Files inserted succesfully");
-      history.push("/home");
-    }
+    } else console.log("user Name invalid");
   };
   useEffect(() => {
     async function getUserDataSetNames() {

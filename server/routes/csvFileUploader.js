@@ -30,7 +30,6 @@ router.post("/:userName/:dataSetName", async (req, res) => {
     }
     dataSetName = req.params.dataSetName;
     userName = req.params.userName;
-    status = null;
     await processFiles(req.files);
     await storeDatasetName();
     return status ? res.sendStatus(200) : res.sendStatus(500);
@@ -60,6 +59,8 @@ async function processFiles(filesObj) {
         }
         return csvRows;
       };
+      //Set status of operation to null
+      status = null;
       const records = await processFile();
       await insertIntoDB(records, fileNameFinder);
       fileNameFinder++;

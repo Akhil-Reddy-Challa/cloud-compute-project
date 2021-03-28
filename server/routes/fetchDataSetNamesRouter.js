@@ -17,7 +17,8 @@ async function fetchRecords(userName) {
     useUnifiedTopology: true,
   });
   const DB_Name = "Users_Database";
-  let names = ["kroger"];
+  //Include the base dataSet name
+  let names = ["8451_The_Complete_Journey_2_Sample"];
 
   try {
     await client.connect();

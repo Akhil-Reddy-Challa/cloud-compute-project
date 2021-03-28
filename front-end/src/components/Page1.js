@@ -1,28 +1,37 @@
 import "../styles/Page1.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 const { Backend_API } = require("../utils/Backend_API");
 
-const Page1 = () => {
+const Page1 = (props) => {
   const [totalTransaction, setTotalTransaction] = useState("");
   const [houseHoldNumber, setHouseHoldNumber] = useState("");
+  const { userName } = props;
+  const [userDatasetList, setUserDatasetList] = useState([]);
 
   const fetchRecordsOfCustomer = async (event) => {
+    const getDataSetName = () => {
+      let name = userDatasetList[document.getElementById("dataSetName").value];
+      return name;
+    };
     event.preventDefault();
     if (!houseHoldNumber) {
       alert("Enter an household number");
       return;
     }
+    let selectedDataSet = getDataSetName();
 
-    const responseFromServer = await fetch(Backend_API + "fetchData/", {
+    const response = await fetch(Backend_API + "fetchData/", {
       headers: { "Content-Type": "application/json" },
       method: "post",
       body: JSON.stringify({
         houseHoldNumber,
+        selectedDataSet,
+        userName,
       }),
     });
-    let { status } = responseFromServer;
+    let { status } = response;
     if (status === 200) {
-      const data = await responseFromServer.json(responseFromServer);
+      const data = await response.json(response);
       writeDataToTable(data);
     } else {
       alert("An Error Occured!");
@@ -83,14 +92,33 @@ const Page1 = () => {
     cleanPreviousHouseHoldRecords();
     handleDataInsertion();
   };
+  useEffect(() => {
+    async function getUserDataSetNames() {
+      const response = await fetch(Backend_API + "fetchDataSetNames", {
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        body: JSON.stringify({ userName }),
+      });
+      let { status } = response;
+      if (status === 200) {
+        const { dataSetNames } = await response.json(response);
+        setUserDatasetList(dataSetNames);
+        console.log(dataSetNames);
+      }
+    }
+    getUserDataSetNames();
+  }, []);
   return (
     <div>
       <div id="mainContainer">
         <div>
-          <label for="sel1">Select a DataSet from below:</label>
-          <select class="form-control">
-            <option value="one">8451_The_Complete_Journey_2_Sample</option>
-            <option value="two">DataSet-2</option>
+          <label htmlFor="sel1">Pick a DataSet:</label>
+          <select id="dataSetName" className="form-control m-2">
+            {userDatasetList.map((name, index) => (
+              <option key={name} value={index}>
+                {name}
+              </option>
+            ))}
           </select>
         </div>
         <p style={{ fontStyle: "italic", fontWeight: "lighter" }}>

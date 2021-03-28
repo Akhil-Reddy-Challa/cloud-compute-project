@@ -41,7 +41,7 @@ const HomePage = (props) => {
         </div>
         <Switch>
           <Route exact path="/home/page1">
-            <Page1 />
+            <Page1 userName={props.user_name} />
           </Route>
           <Route exact path="/home/page2">
             <Page2 />
