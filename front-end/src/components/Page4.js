@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import "../styles/page4.css";
 const { Backend_API } = require("../utils/Backend_API");
 
 const Page4 = (props) => {
@@ -35,7 +36,7 @@ const Page4 = (props) => {
         }
       );
       if (status === 200) {
-        //console.log("Files inserted succesfully");
+        console.log("Files inserted succesfully");
         history.push("/home/page1");
       }
     } else {
@@ -63,6 +64,7 @@ const Page4 = (props) => {
     <div id="mainContainer">
       <form
         onSubmit={(e) => handleFilesUpload(e)}
+        id="uploadForm"
         encType="multipart/form-data"
       >
         <div className="mb-3">

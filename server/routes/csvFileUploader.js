@@ -69,7 +69,41 @@ async function processFiles(filesObj) {
   };
   let files = [];
   for (let file of filesObj) files.push(file.path);
+  //Create DB and setup tables
+  await setupDB();
   await parseCSVFiles(files);
+}
+async function setupDB() {
+  const mysql = require("mysql");
+  const pool = mysql.createPool({
+    connectionLimit: 10,
+    host: host,
+    port: port,
+    user: user,
+    password: password,
+  });
+  executeQuery = (query) => {
+    return new Promise((resolve, reject) => {
+      pool.query(query, (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+        return resolve(results);
+      });
+    });
+  };
+
+  try {
+    //Construct DB name
+    const DB_NAME = "USER_" + userName + "_DATASET_" + dataSetName;
+    //Drop DB if it exists already
+    await executeQuery(`DROP DATABASE IF EXISTS ${DB_NAME};`);
+    //Now create a fresh copy
+    await executeQuery(`CREATE DATABASE IF NOT EXISTS ${DB_NAME};`);
+  } catch (err) {
+    status = null;
+    console.error(err);
+  }
 }
 
 async function insertIntoDB(csvRows, fileNameFinder) {
@@ -110,16 +144,6 @@ async function transmitRecords(csvHeaders, csvValues, tableName) {
     user: user,
     password: password,
   });
-  createDB = (query) => {
-    return new Promise((resolve, reject) => {
-      pool.query(query, (error, results) => {
-        if (error) {
-          return reject(error);
-        }
-        return resolve(results);
-      });
-    });
-  };
   createTable = (query) => {
     return new Promise((resolve, reject) => {
       pool.query(query, (error, results) => {
@@ -142,12 +166,8 @@ async function transmitRecords(csvHeaders, csvValues, tableName) {
   };
 
   try {
-    //Create DB If Not Exists
     const DB_NAME = "USER_" + userName + "_DATASET_" + dataSetName;
-    let statement = `CREATE DATABASE IF NOT EXISTS ${DB_NAME};`;
-    createDB(statement);
 
-    //Create-Table query
     let tableCreateStatement = `CREATE TABLE ${DB_NAME}.${tableName}(`;
     for (let i = 0; i < csvHeaders.length; i++) {
       if (i === csvHeaders.length - 1)
@@ -155,8 +175,10 @@ async function transmitRecords(csvHeaders, csvValues, tableName) {
       else tableCreateStatement += `${csvHeaders[i]} varchar(200),`;
     }
     await createTable(tableCreateStatement);
+
     let insertStatement = `INSERT INTO ${DB_NAME}.${tableName} VALUES ?`;
     await insertData(insertStatement, csvValues);
+
     status = "SUCCESS";
   } catch (err) {
     status = null;
