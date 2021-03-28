@@ -32,7 +32,7 @@ async function fetchRecordsOfHouseHold(houseHoldNumber) {
       return new Promise((resolve, reject) => {
         pool.query(query, [houseHoldNumber], (error, results) => {
           if (error) {
-            console.error("error.stack");
+            console.error(error.stack);
             // return reject(error);
           }
           return resolve(results);
