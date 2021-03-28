@@ -27,20 +27,32 @@ async function fetchRecordsOfHouseHold(houseHoldNumber) {
     password: password,
     database: database,
   });
-  executeQuery = () => {
-    return new Promise((resolve, reject) => {
-      pool.query(query, [houseHoldNumber], (error, results) => {
-        if (error) {
-          return reject(error);
-        }
-        return resolve(results);
+  try {
+    executeQuery = (query) => {
+      return new Promise((resolve, reject) => {
+        pool.query(query, [houseHoldNumber], (error, results) => {
+          if (error) {
+            console.error("error.stack");
+            // return reject(error);
+          }
+          return resolve(results);
+        });
       });
-    });
-  };
-  let query =
-    "SELECT * from HOUSEHOLDS h JOIN TRANSACTIONS t ON h.HSHD_NUM = t.HSHD_NUM JOIN PRODUCTS p ON p.PRODUCT_NUM = t.PRODUCT_NUM WHERE h.HSHD_NUM = ? ORDER BY 1,2,3,4,5,6;";
-  let recordsOfHouseHold = await executeQuery();
-  return recordsOfHouseHold.length > 0 ? recordsOfHouseHold : [];
+    };
+    let recordsOfHouseHold = [];
+    let query =
+      "SELECT h.HSHD_NUM,t.BASKET_NUM,t.PURCHASE,t.PRODUCT_NUM,p.DEPARTMENT,p.COMMODITY,t.SPEND,t.UNITS,t.STORE_R,t.WEEK_NUM,t.YEAR,h.L,h.AGE_RANGE, h.MARITAL,h.INCOME_RANGE,h.Homeowner,h.HSHD_COMPOSITION,h.HH_SIZE,h.CHILDREN from HOUSEHOLDS h JOIN TRANSACTIONS t ON h.HSHD_NUM = t.HSHD_NUM JOIN PRODUCTS p ON p.PRODUCT_NUM = t.PRODUCT_NUM WHERE h.HSHD_NUM = ? ORDER BY 1,2,3,4,5,6;";
+    recordsOfHouseHold = await executeQuery(query);
+    if (!recordsOfHouseHold) {
+      let backup_query =
+        "SELECT * from HOUSEHOLDS h JOIN TRANSACTIONS t ON h.HSHD_NUM = t.HSHD_NUM JOIN PRODUCTS p ON p.PRODUCT_NUM = t.PRODUCT_NUM WHERE h.HSHD_NUM = ? ORDER BY 1,2,3,4,5,6;";
+      recordsOfHouseHold = await executeQuery(backup_query);
+    }
+
+    return recordsOfHouseHold ? recordsOfHouseHold : [];
+  } catch (err) {
+    console.error(err.stack);
+  }
 }
 
 module.exports = router;
