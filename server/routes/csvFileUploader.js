@@ -169,10 +169,14 @@ async function transmitRecords(csvHeaders, csvValues, tableName) {
     const DB_NAME = "USER_" + userName + "_DATASET_" + dataSetName;
 
     let tableCreateStatement = `CREATE TABLE ${DB_NAME}.${tableName}(`;
+
     for (let i = 0; i < csvHeaders.length; i++) {
-      if (i === csvHeaders.length - 1)
-        tableCreateStatement += `${csvHeaders[i]} varchar(200));`;
-      else tableCreateStatement += `${csvHeaders[i]} varchar(200),`;
+      //console.log(csvHeaders[i].toUpperCase().indexOf("NUM"));
+      let dataType = "varchar(200)";
+      if (csvHeaders[i].toUpperCase().indexOf("NUM") > 0) dataType = "INT";
+      if (i === csvHeaders.length - 1) {
+        tableCreateStatement += `${csvHeaders[i]} ${dataType});`;
+      } else tableCreateStatement += `${csvHeaders[i]} ${dataType},`;
     }
     await createTable(tableCreateStatement);
 
