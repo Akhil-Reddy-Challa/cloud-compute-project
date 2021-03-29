@@ -30,12 +30,7 @@ const HomePage = (props) => {
         <div id="pagesContainer" className="d-flex justify-content-center">
           <ul>
             <Link to="/home/page1">Search on Data Pulls</Link>
-            <Link to="/home/page2">
-              Find how does customer engagement change over time.
-            </Link>
-            <Link to="/home/page3">
-              Find which demographic factors affect customer engagement.
-            </Link>
+            <Link to="/home/page2">Dashboard</Link>
             <Link to="/home/page4">Upload DataSet</Link>
           </ul>
         </div>
