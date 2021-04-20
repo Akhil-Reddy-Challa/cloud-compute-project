@@ -1,5 +1,5 @@
 import { Chart } from "react-google-charts";
-const PieChart_2 = () => {
+const PieChart2 = () => {
   return (
     <div>
       <Chart
@@ -62,4 +62,4 @@ const PieChart_2 = () => {
   );
 };
 
-export default PieChart_2;
+export default PieChart2;

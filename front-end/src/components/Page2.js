@@ -1,8 +1,8 @@
 import BarChart from "../components/Charts/BarChart";
 import ComboChart from "../components/Charts/ComboChart";
 import LineChart from "../components/Charts/LineChart";
-import PieChart_1 from "../components/Charts/PieChart_1";
-import PieChart_2 from "../components/Charts/PieChart_2";
+import PieChart1 from "../components/Charts/PieChart1";
+import PieChart2 from "../components/Charts/PieChart2";
 
 const Page2 = () => {
   return (
@@ -23,10 +23,10 @@ const Page2 = () => {
         </tr>
         <tr>
           <td>
-            <PieChart_1 />
+            <PieChart1 />
           </td>
           <td>
-            <PieChart_2 />
+            <PieChart2 />
           </td>
         </tr>
       </table>
