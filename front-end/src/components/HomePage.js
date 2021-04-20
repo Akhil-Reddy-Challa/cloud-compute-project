@@ -2,10 +2,9 @@ import Navbar from "react-bootstrap/Navbar";
 import { Route, BrowserRouter as Router, Switch, Link } from "react-router-dom";
 import "../styles/HomePage.css";
 import { useHistory } from "react-router-dom";
-import Page1 from "../components/Page1";
-import Page2 from "../components/Page2";
-import Page3 from "../components/Page3";
-import Page4 from "../components/Page4";
+import SearchPage from "../components/Page1";
+import Dashboard from "./Dashboards";
+import FilesUpload from "./FilesUpload";
 
 const HomePage = (props) => {
   const history = useHistory();
@@ -29,23 +28,20 @@ const HomePage = (props) => {
         </Navbar>
         <div id="pagesContainer" className="d-flex justify-content-center">
           <ul>
-            <Link to="/home/page1">Search on Data Pulls</Link>
-            <Link to="/home/page2">Dashboard</Link>
-            <Link to="/home/page4">Upload DataSet</Link>
+            <Link to="/home/search">Search on Data Pulls</Link>
+            <Link to="/home/dashboard">Dashboard</Link>
+            <Link to="/home/upload">Upload DataSet</Link>
           </ul>
         </div>
         <Switch>
-          <Route exact path="/home/page1">
-            <Page1 userName={props.user_name} />
+          <Route exact path="/home/search">
+            <SearchPage />
           </Route>
-          <Route exact path="/home/page2">
-            <Page2 />
+          <Route exact path="/home/dashboard">
+            <Dashboard />
           </Route>
-          <Route exact path="/home/page3">
-            <Page3 />
-          </Route>
-          <Route exact path="/home/page4">
-            <Page4 userName={props.user_name} />
+          <Route exact path="/home/upload">
+            <FilesUpload />
           </Route>
         </Switch>
       </div>

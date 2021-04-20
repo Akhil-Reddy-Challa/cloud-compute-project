@@ -2,7 +2,7 @@ import "../styles/Page1.css";
 import { useState, useEffect } from "react";
 const { Backend_API } = require("../utils/Backend_API");
 
-const Page1 = () => {
+const SearchPage = () => {
   const [totalTransaction, setTotalTransaction] = useState("");
   const [houseHoldNumber, setHouseHoldNumber] = useState("");
   const { userName } = sessionStorage.getItem("user_auth_token");
@@ -168,4 +168,4 @@ const Page1 = () => {
   );
 };
 
-export default Page1;
+export default SearchPage;
