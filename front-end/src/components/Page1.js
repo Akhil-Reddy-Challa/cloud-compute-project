@@ -2,10 +2,10 @@ import "../styles/Page1.css";
 import { useState, useEffect } from "react";
 const { Backend_API } = require("../utils/Backend_API");
 
-const Page1 = (props) => {
+const Page1 = () => {
   const [totalTransaction, setTotalTransaction] = useState("");
   const [houseHoldNumber, setHouseHoldNumber] = useState("");
-  const { userName } = props;
+  const { userName } = sessionStorage.getItem("user_auth_token");
   const [userDatasetList, setUserDatasetList] = useState([]);
 
   const fetchRecordsOfCustomer = async (event) => {

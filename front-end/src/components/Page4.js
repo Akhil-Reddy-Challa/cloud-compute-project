@@ -3,9 +3,9 @@ import { useHistory } from "react-router-dom";
 import "../styles/page4.css";
 const { Backend_API } = require("../utils/Backend_API");
 
-const Page4 = (props) => {
+const Page4 = () => {
   const [dataSetName, setDataSetName] = useState("");
-  let { userName } = props;
+  let userName = sessionStorage.getItem("user_auth_token");
   const [userDatasetList, setUserDatasetList] = useState([]);
   const history = useHistory();
 
