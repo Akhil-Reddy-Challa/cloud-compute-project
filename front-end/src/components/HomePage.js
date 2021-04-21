@@ -2,7 +2,7 @@ import Navbar from "react-bootstrap/Navbar";
 import { Route, BrowserRouter as Router, Switch, Link } from "react-router-dom";
 import "../styles/HomePage.css";
 import { useHistory } from "react-router-dom";
-import SearchPage from "../components/Page1";
+import SearchPage from "../components/SearchPage";
 import Dashboard from "./Dashboards";
 import FilesUpload from "./FilesUpload";
 
