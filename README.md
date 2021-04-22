@@ -10,7 +10,7 @@ The analysis performed around the dataset is mostly based on the below questions
 
 Analysis performed on the above data-set and queries can be used to drive better customer engagement in the stores.
 
-Tech Stack:
+### Tech Stack:
 - ReactJS (Front-end)
 - MongoDB (Authentication)
 - NodeJS (Server)
