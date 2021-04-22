@@ -1,6 +1,6 @@
 # Project Abstract
 
-An interactive web application that explores the real-world Retail data from 84.51°/Kroger (anonymized). 
+An interactive web application that explores the real-world Retail data from 84.51°/Kroger (anonymized).  
 The analysis performed around the dataset is mostly based on the below questions.
 1. How does customer engagement change over time?
 	- Do households spend less or more?
@@ -11,8 +11,8 @@ The analysis performed around the dataset is mostly based on the below questions
 Analysis performed on the above data-set and queries can be used to drive better customer engagement in the stores.
 
 ### Tech Stack:
-- ReactJS (Front-end)
-- MongoDB (Authentication)
-- NodeJS (Server)
-- Amazon RDS (Database)
-- Amazon EC2 (Deployment & Hosting)
+ReactJS (Front-end)  
+MongoDB (Authentication)  
+NodeJS (Server)  
+Amazon RDS (Database)  
+Amazon EC2 (Deployment & Hosting)  
